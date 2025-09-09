@@ -15,9 +15,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  ***********************************************************************/
-
 import * as path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import * as url from 'node:url';
 
 import type { Browser, Locator, Page } from '@playwright/test';
 import type { ConfirmInputValue } from '@podman-desktop/tests-playwright';
@@ -48,7 +47,7 @@ let extensionInstalled = false;
 const skipInstallation = process.env.SKIP_INSTALLATION;
 const extensionURL = process.env.OCI_IMAGE ?? 'ghcr.io/redhat-developer/podman-desktop-rhel-ext:next';
 
-const __filename = fileURLToPath(import.meta.url);
+const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const browserOutputPath = [__dirname, '..', 'output', 'browser'];
 
@@ -275,3 +274,4 @@ async function createRhelVM(page: Page, timeout = 120_000): Promise<void> {
   await playExpect(goBackButton).toBeEnabled({ timeout: timeout });
   await goBackButton.click();
 }
+
