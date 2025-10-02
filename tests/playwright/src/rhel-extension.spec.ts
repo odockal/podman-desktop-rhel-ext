@@ -49,6 +49,7 @@ const extensionHeading = 'RHEL VMs';
 let extensionInstalled = false;
 const skipInstallation = process.env.SKIP_INSTALLATION;
 const extensionURL = process.env.OCI_IMAGE ?? 'ghcr.io/redhat-developer/podman-desktop-rhel-ext:next';
+const ssoUrl = 'quay.io/odockal/extension-sso:nightly';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -91,6 +92,17 @@ test.describe.serial('RHEL Extension E2E Tests', () => {
       test.setTimeout(120_000);
       console.log('Extension found already installed, trying to remove!');
       await ensureRhelExtensionIsRemoved(navigationBar);
+    });
+
+    test('Install SSO extension for debugging', async ({ navigationBar }) => {
+      test.setTimeout(200_000);
+
+      const extensionsPage = await navigationBar.openExtensions();
+      await extensionsPage.installExtensionFromOCIImage(ssoUrl);
+
+      await playExpect
+        .poll(async () => await extensionsPage.extensionIsInstalled('redhat.redhat-authentication'), { timeout: 30_000 })
+        .toBeTruthy();
     });
 
     test('Install extension through Extension page', async ({ navigationBar }) => {
